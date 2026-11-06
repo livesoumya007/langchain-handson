@@ -1,3 +1,4 @@
+from langchain_core.output_parsers import StrOutputParser
 import os
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
@@ -35,7 +36,14 @@ Think of | as Promise chaining or Unix pipe:
 In A | B: Take the output of A and automatically feed it as the input into B.
 """
 
-chain = summary_prompt_tenplate | llm 
+chain = summary_prompt_tenplate | llm | StrOutputParser()
+
+"""
+    the invoke() executes the entire LCEL chain. First it passes the
+    input to the PromptTemplate, then it passes the output of the PromptTemplate
+    to the LLM, then it passes the output of the LLM to the output parser, then it
+    passes the output of the output parser to the final result. 
+"""
 response = chain.invoke(input={"info":info})
 
-print("checking: ", response.content)
+print("checking: ", response)
